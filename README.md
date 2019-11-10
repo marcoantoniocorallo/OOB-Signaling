@@ -1,4 +1,4 @@
-# OOB-Signaling
+# Out-Of-Band Signaling
 ###### Progetto universitario per il corso di Sistemi Operativi e Laboratorio - Università di Pisa, a.a. 2018/2019
 
 È richiesta la realizzazione di un sistema per l'out-of-band signaling. 
