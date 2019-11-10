@@ -17,4 +17,4 @@ con errore entro 25 unita rispetto al valore del secret vero) e sull'errore medi
 
 Il funzionamento di ciascuno dei componenti è descritto nel testo del progetto, mentre i dettagli implementativi sono discussi all'interno della relazione.
 Il sistema Supervisor+Server è stato testato anche con clients di terze parti e non sono stati riscontrati problemi o anomalie.
-##### Nota: L'intero progetto è stato sviluppato e distribuito riservando particolare interesse al tempo di consegna.
+#### Nota: L'intero progetto è stato sviluppato e distribuito riservando particolare interesse al tempo di consegna.
