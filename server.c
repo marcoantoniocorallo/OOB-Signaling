@@ -20,6 +20,7 @@
 
 void* worker(void* fd);
 void sigPipeHandler();
+int MCDCalc(int* A, int size);
 
 //Ci saranno al più tanti threads quanto il numero massimo di clients contemporanei
 //Probabilmente meno, per limite di risorse
@@ -114,14 +115,15 @@ int main(int argc, char* argv[]) {
 
                     // chiudi FD e libera memoria
                     close(mask[i].fd);
-                    free(msg);
+					if (msg)
+	                    free(msg);
                 }
                 INIZIALIZZA(mask[i])
             }
         }
     }
-
-    free(args);
+	if (args)
+	    free(args);
     close(pfd);
     unlink(name);
     return 0;
@@ -189,22 +191,23 @@ void* worker(void* fd)
             timeval_subtract(&diff,&times[j+1], &times[j]);
 
             //Scrive la differenza tra i due tempi - espressa come <sec,u-sec> - in millisecondi
-            //sprintf(msg,"%ld%03d", labs(diff.tv_sec), abs(diff.tv_usec/1000)); <- alternativa collega
-            //stima=strtoll(msg,NULL,10);
             stima = (diff.tv_sec*1000)+(diff.tv_usec/1000);
             stime[j] = stima;
         }   if (times)
             free(times);
+	
+	//Calcola MCD
+	stima = MCDCalc(stime,j);
 
-        //Considera ogni differenza di orari, facendo il MCD a due a due
-        for (int k = 0; k < j; k++)
-            stima = approximate(stime[k], stima);
-        if (stime)
+	if (stime)
             free(stime);
 
         //Esci restituendo la coppia <ID,Stima>
         memset(msg,'\0', MAXTOWRITE);
-        sprintf(msg, "%lld,%d", id, stima);
+		if (stima == -1)
+			sprintf(msg,"%d",-1);
+		else    
+		    sprintf(msg, "%lld,%d", id, stima);
         printf("SERVER %d CLOSING %x ESTIMATES %d\n", snum, (int)id, stima);
         fflush(stdout);
         mask[index].end = 1;
@@ -215,4 +218,42 @@ void* worker(void* fd)
 void sigPipeHandler()
 {
     terminate=1;
+}
+
+int MCDCalc(int* A, int size){
+
+//	#---VECCHIO CALCOLO MCD---#
+/*
+        //Considera ogni differenza di orari, facendo il MCD a due a due
+		int stima=0;
+        for (int k = 0; k < size; k++)
+            stima = approximate(A[k], stima);
+		return stima;
+*/
+
+	//#---NUOVO CALCOLO MCD---#
+
+	//Se c'è un solo elemento, restituiscilo direttamente
+	//if(size==1) return A[0];
+
+	//Calcola l'MCD di tutte le possibili coppie di stime
+
+		//Dimension = C(n,2) = #MCDS
+		int num = factorial(size);
+		int den = 2*factorial(size-2);
+		int	dimension = num/den;
+		
+		//Calcolo tutti i possibili MCD
+		int mcds[dimension];
+        for (int k = 0; k < size-1; k++) {
+            for (int l = k+1; l < size; l++) {
+                mcds[EL(k,size,l)]=approximate(A[k],A[l]);
+            }
+        }
+		
+		//Seleziona l'MCD più ricorrente
+		int migliorStima = mostFrequent(mcds, dimension);
+		int result = mcds[migliorStima];
+
+		return result;
 }

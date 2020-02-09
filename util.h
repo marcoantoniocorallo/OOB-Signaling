@@ -27,6 +27,8 @@
 			exit(EXIT_FAILURE);	\
 		}
 
+#define EL(a,b,c)	\
+		((a*(b-1))+(c-a-1))
 /* Funzione di elaborazione presa sul web.
  * Fonte: https://www.linuxquestions.org/questions/programming-9/
  *       how-to-calculate-time-difference-in-milliseconds-in-c-c-711096/
@@ -59,6 +61,36 @@ int MCD(int a, int b){
     if (a == 0)
         return b;
     return MCD(b%a, a);
+}
+
+int factorial( int N )
+{
+  int product = 1;
+  for ( int j=1; j<=N; j++ )
+    product *= j;
+  product = product>0? product:1;
+  return product;
+}
+
+//Calcola il numero più frequente
+int mostFrequent(int *A, int n){
+
+    int max=-1;
+    int index=-1;
+    for (int i = 0; i < n; i++) {
+        int occurrences=1;
+        for (int j = i+1; j < n; j++) {
+            if (A[i]==A[j])
+                occurrences++;
+        }
+        if (occurrences>max) {
+            max=occurrences;
+            index=i;
+        }
+
+    }
+
+    return index;
 }
 
 //Esegue un controllo pre e post MCD:
