@@ -17,4 +17,8 @@ con errore entro 25 unita rispetto al valore del secret vero) e sull'errore medi
 
 Il funzionamento di ciascuno dei componenti è descritto nel testo del progetto, mentre i dettagli implementativi sono discussi all'interno della relazione.
 Il sistema Supervisor+Server è stato testato anche con clients di terze parti e non sono stati riscontrati problemi o anomalie.
+
+Edit: È stata aumentata l'accuratezza con una veloce modifica all'algoritmo di calcolo.
+La modifica consiste nel calcolo degli MCD tra tutte le varie coppie (Cn,2 -> Coefficiente binomiale di n su 2, in numero), aggregandoli in un array e prendendo successivamente l'elemento più ricorrente. Con questa modifica, l'accuratezza è salita ad una media di 17/20 (si provi a lanciare make test), contro i 10/20 iniziali.
+
 #### Nota: L'intero progetto è stato sviluppato e distribuito riservando particolare interesse al tempo di consegna.
